@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 8000, host: 8000, host_ip: "127.0.0.1"
 
   config.vm.provision "shell", inline: <<-SHELL
-    yum install -y python39-devel python3-virtualenv python39-wheel xmlsec1
+    yum install -y python39-devel python3-virtualenv python39-wheel xmlsec1 xmlsec1-openssl
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
     python3.9 -m venv ~/venv
