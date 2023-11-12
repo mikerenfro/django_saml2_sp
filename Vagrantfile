@@ -32,17 +32,26 @@ Vagrant.configure("2") do |config|
       echo "Django app ${APP} already created"
     fi
     # Fix project settings
-    grep -q "INSTALLED_APPS += ['django_extensions']" ${PROJECT}/settings.py || echo "INSTALLED_APPS += ['django_extensions']" >> ${PROJECT}/settings.py
-    grep -q "INSTALLED_APPS += ['${APP}.apps.${CAP_APP}Config']" ${PROJECT}/settings.py || echo "INSTALLED_APPS += ['${APP}.apps.${CAP_APP}Config']" >> ${PROJECT}/settings.py
+    grep -qF "INSTALLED_APPS += ['django_extensions']" ${PROJECT}/settings.py || echo "INSTALLED_APPS += ['django_extensions']" >> ${PROJECT}/settings.py
+    grep -qF "INSTALLED_APPS += ['${APP}.apps.${CAP_APP}Config']" ${PROJECT}/settings.py || echo "INSTALLED_APPS += ['${APP}.apps.${CAP_APP}Config']" >> ${PROJECT}/settings.py
+    grep -qF 'from .saml2_auth_settings import *' ${PROJECT}/settings.py || echo 'from .saml2_auth_settings import *' >> ${PROJECT}/settings.py
+    grep -qF 'SAML2_AUTH = SAML2_AUTH' ${PROJECT}/settings.py || echo 'SAML2_AUTH = SAML2_AUTH' >> ${PROJECT}/settings.py
+
     # Fix project URLs
-    grep -q '^from django.urls import include' ${PROJECT}/urls.py || echo "from django.urls import include" >> ${PROJECT}/urls.py
-    grep -q '^from django.views.generic import RedirectView' ${PROJECT}/urls.py || echo "from django.views.generic import RedirectView" >> ${PROJECT}/urls.py
-    grep -q "urlpatterns += [ path('${APP}/', include('${APP}.urls')), ]" ${PROJECT}/urls.py || echo "urlpatterns += [ path('${APP}/', include('${APP}.urls')), ]" >> ${PROJECT}/urls.py
-    grep -q "urlpatterns += urlpatterns += [ path('', RedirectView.as_view(url='${APP}/', permanent=True)), ]" ${PROJECT}/urls.py || echo "urlpatterns += [ path('', RedirectView.as_view(url='${APP}/', permanent=True)), ]" >> ${PROJECT}/urls.py
-    grep -q '^from django.conf import settings' ${PROJECT}/urls.py || echo "from django.conf import settings" >> ${PROJECT}/urls.py
-    grep -q '^from django.conf.urls.static import static' ${PROJECT}/urls.py || echo "from django.conf.urls.static import static" >> ${PROJECT}/urls.py
-    grep -q 'urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)' ${PROJECT}/urls.py || echo "urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)" >> ${PROJECT}/urls.py
-    grep -q "accounts/" ${PROJECT}/urls.py || echo "urlpatterns += [ path('accounts/', include('django.contrib.auth.urls')), ]" >> ${PROJECT}/urls.py
+    grep -qF '^from django.urls import include' ${PROJECT}/urls.py || echo "from django.urls import include" >> ${PROJECT}/urls.py
+    grep -qF '^from django.views.generic import RedirectView' ${PROJECT}/urls.py || echo "from django.views.generic import RedirectView" >> ${PROJECT}/urls.py
+    grep -qF "urlpatterns += [ path('${APP}/', include('${APP}.urls')), ]" ${PROJECT}/urls.py || echo "urlpatterns += [ path('${APP}/', include('${APP}.urls')), ]" >> ${PROJECT}/urls.py
+    grep -qF "urlpatterns += [ path('', RedirectView.as_view(url='${APP}/', permanent=True)), ]" ${PROJECT}/urls.py || echo "urlpatterns += [ path('', RedirectView.as_view(url='${APP}/', permanent=True)), ]" >> ${PROJECT}/urls.py
+    grep -qF '^from django.conf import settings' ${PROJECT}/urls.py || echo "from django.conf import settings" >> ${PROJECT}/urls.py
+    grep -qF '^from django.conf.urls.static import static' ${PROJECT}/urls.py || echo "from django.conf.urls.static import static" >> ${PROJECT}/urls.py
+    grep -qF 'urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)' ${PROJECT}/urls.py || echo "urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)" >> ${PROJECT}/urls.py
+    grep -qF "accounts/" ${PROJECT}/urls.py || echo "urlpatterns += [ path('accounts/', include('django.contrib.auth.urls')), ]" >> ${PROJECT}/urls.py
+    grep -qF "urlpatterns += [ path('saml2_auth/', include('django_saml2_auth.urls')), ]" ${PROJECT}/urls.py || echo "urlpatterns += [ path('saml2_auth/', include('django_saml2_auth.urls')), ]" >> ${PROJECT}/urls.py
+    
+
+    # Fix project scripts
+    cp -a ../project_py/* ${PROJECT}
+
     # Fix app templates, scripts, static content
     cp -a ../app_templates ${APP}/templates
     cp -a ../app_py/* ${APP}/
