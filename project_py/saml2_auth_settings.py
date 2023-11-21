@@ -18,7 +18,7 @@ SAML2_AUTH = {
         'first_name': 'givenName',
         'last_name': 'surname',
     },
-    'ASSERTION_URL': 'http://localhost:8000', # Custom URL to validate incoming SAML requests against
-    'ENTITY_ID': 'http://localhost:8000/saml2_auth/acs/', # Populates the Issuer element in authn request
+    'ASSERTION_URL': 'https://localhost:8443', # Custom URL to validate incoming SAML requests against
+    'ENTITY_ID': 'https://localhost:8443/saml2_auth/acs/', # Populates the Issuer element in authn request
 }
 # Need to swap to https to satisfy Entra SAML requirements for SP-initiated SAML.
