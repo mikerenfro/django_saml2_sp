@@ -43,9 +43,7 @@ Vagrant.configure("2") do |config|
       echo "Django app ${APP} already created"
     fi
     function add_if_missing() {
-      if [ -f $2 ]; then
-        grep -qFx $1 $2 || echo $1 >> $2
-      fi
+      grep -qFx "$1" $2 || echo "$1" >> $2
     }
     # Fix project settings
     add_if_missing "INSTALLED_APPS += ['django_extensions']" ${PROJECT}/settings.py
@@ -56,7 +54,7 @@ Vagrant.configure("2") do |config|
     # Fix project URLs
     add_if_missing 'from django.urls import include' ${PROJECT}/urls.py
     add_if_missing 'from django.views.generic import RedirectView' ${PROJECT}/urls.py
-    add_if_missing "urlpatterns += [ path('${APP}/', include('${APP}.urls')), ]"
+    add_if_missing "urlpatterns += [ path('${APP}/', include('${APP}.urls')), ]" ${PROJECT}/urls.py
     add_if_missing "urlpatterns += [ path('', RedirectView.as_view(url='${APP}/', permanent=True)), ]" ${PROJECT}/urls.py
     add_if_missing 'from django.conf import settings' ${PROJECT}/urls.py
     add_if_missing 'from django.conf.urls.static import static' ${PROJECT}/urls.py
@@ -80,5 +78,8 @@ Vagrant.configure("2") do |config|
     cp ../auto_create_users.py scripts
     python manage.py runscript auto_create_users
     # python manage.py runserver 0.0.0.0:8000
+    echo "Don't forget to add:"
+    echo "- the login link to myapp/templates/registration/login.html"
+    echo "- the app federation metadata url to saml_sp/saml2_auth_settings.py"
   SHELL
 end
