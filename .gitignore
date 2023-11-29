@@ -1,2 +1,4 @@
 .vagrant/
 saml_sp
+localhost.crt
+localhost.key
